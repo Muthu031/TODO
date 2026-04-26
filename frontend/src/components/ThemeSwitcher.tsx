@@ -65,19 +65,21 @@ export const ThemeSwitcher: React.FC = () => {
           px-3 py-1.5 rounded
           text-sm font-semibold
           transition-all duration-300
-          ${colors.navText}
-          ${colors.buttonSecondary}
           border border-current
           cursor-pointer
-          hover:opacity-100 active:scale-95
+          active:scale-95
           focus:outline-none focus:ring-2 focus:ring-offset-1
           appearance-none
           bg-no-repeat
         `}
         style={{
-          backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+          color: colors.navText.replace('text-', '').startsWith('white') || colors.navText.includes('text-white') ? '#fff' : '#000',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderColor: 'currentColor',
+          backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
           backgroundPosition: 'right 0.5rem center',
           backgroundSize: '1.5em 1.5em',
+          backgroundRepeat: 'no-repeat',
           paddingRight: '2.5rem',
         }}
       >
@@ -86,7 +88,11 @@ export const ThemeSwitcher: React.FC = () => {
           <option 
             key={themeKey} 
             value={themeKey}
-            className="bg-white text-gray-900 font-semibold"
+            style={{
+              backgroundColor: '#ffffff',
+              color: '#111827',
+              fontWeight: '600',
+            }}
           >
             {themeName}
           </option>
