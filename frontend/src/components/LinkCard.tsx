@@ -72,6 +72,20 @@ export const LinkCard: React.FC<LinkCardProps> = ({
         </div>
       )}
       
+      {/* Shortened URL */}
+      <div className="mb-3">
+        <p className="text-sm text-gray-600 mb-1">Shortened URL</p>
+        <a
+          href={shortUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-purple-600 hover:text-purple-800 hover:underline break-all font-mono font-semibold bg-purple-50 p-3 rounded border border-purple-200 inline-block"
+          title={`Click to test: ${shortUrl}`}
+        >
+          {shortUrl}
+        </a>
+      </div>
+      
       {/* Original URL */}
       <div className="mb-3">
         <p className="text-sm text-gray-600 mb-1">Original URL</p>
