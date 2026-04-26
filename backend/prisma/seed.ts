@@ -2,6 +2,10 @@
  * Prisma seed file - Initialize database with sample data
  * Run with: npm run prisma:seed
  */
+import dotenv from 'dotenv';
+
+// Load .env file into process.env
+dotenv.config();
 
 import { PrismaClient } from '@prisma/client';
 
