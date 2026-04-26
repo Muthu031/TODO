@@ -161,7 +161,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({
             hover:scale-105 active:scale-95
           `}
         >
-          {copied ? '✓ Copied' : '📋 Copy'}
+          {copied ? '✓ Copied' : 'Copy'}
         </button>
 
         {/* Analytics button */}
@@ -174,7 +174,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({
               hover:scale-105 active:scale-95
             `}
           >
-            📊 Analytics
+            Analytics
           </button>
         )}
 
@@ -190,7 +190,7 @@ export const LinkCard: React.FC<LinkCardProps> = ({
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
-            {isDeleting ? '...' : '🗑️ Delete'}
+            {isDeleting ? '...' : 'Delete'}
           </button>
         )}
       </div>
