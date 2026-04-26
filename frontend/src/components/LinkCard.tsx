@@ -4,14 +4,13 @@
  */
 
 import React, { useState } from 'react';
+import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { Link } from '../types';
-import { formatDate, generateShortUrl, formatNumber, copyToClipboard } from '../utils';
+import { formatDate, generateShortUrl, copyToClipboard } from '../utils';
 
 interface LinkCardProps {
   /** Link data to display */
   link: Link;
-  /** Total clicks for this link */
-  clicks?: number;
   /** Callback when delete button clicked */
   onDelete?: (id: string) => void;
   /** Callback when analytics button clicked */
@@ -26,7 +25,6 @@ interface LinkCardProps {
  */
 export const LinkCard: React.FC<LinkCardProps> = ({
   link,
-  clicks = 0,
   onDelete,
   onAnalytics,
   isDeleting = false,
@@ -51,69 +49,83 @@ export const LinkCard: React.FC<LinkCardProps> = ({
   
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-      {/* Header: Short code and status */}
-      <div className="flex justify-between items-start mb-4 pb-4 border-b border-gray-100">
-        <div>
-          <p className="text-sm text-gray-600">Short Code</p>
-          <p className="text-lg font-bold text-blue-600 font-mono">{link.shortCode}</p>
+      {/* Container with content on left and QR on right */}
+      <div className="flex gap-6">
+        {/* Left side: Link information */}
+        <div className="flex-1">
+          {/* Header: Short code and status */}
+          <div className="flex justify-between items-start mb-4 pb-4 border-b border-gray-100">
+            <div>
+              <p className="text-sm text-gray-600">Short Code</p>
+              <p className="text-lg font-bold text-blue-600 font-mono">{link.shortCode}</p>
+            </div>
+            {isExpired && (
+              <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-semibold">
+                Expired
+              </span>
+            )}
+          </div>
+          
+          {/* Custom alias if exists */}
+          {link.customAlias && (
+            <div className="mb-3">
+              <p className="text-sm text-gray-600">Custom Alias</p>
+              <p className="text-sm font-semibold text-green-600">{link.customAlias}</p>
+            </div>
+          )}
+          
+          {/* Shortened URL */}
+          <div className="mb-3">
+            <p className="text-sm text-gray-600 mb-1">Shortened URL</p>
+            <a
+              href={shortUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-purple-600 hover:text-purple-800 hover:underline break-all font-mono font-semibold bg-purple-50 p-3 rounded border border-purple-200 inline-block"
+              title={`Click to test: ${shortUrl}`}
+            >
+              {shortUrl}
+            </a>
+          </div>
+          
+          {/* Original URL */}
+          <div className="mb-3">
+            <p className="text-sm text-gray-600 mb-1">Original URL</p>
+            <a
+              href={link.originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-500 hover:underline break-words"
+              title={link.originalUrl}
+            >
+              {link.originalUrl}
+            </a>
+          </div>
+          
+          {/* Created Date */}
+          <div className="text-sm">
+            <p className="text-gray-600 text-xs font-semibold uppercase mb-1">Created</p>
+            <p className="font-semibold text-gray-900">{formatDate(link.createdAt)}</p>
+          </div>
         </div>
-        {isExpired && (
-          <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-semibold">
-            Expired
-          </span>
-        )}
-      </div>
-      
-      {/* Custom alias if exists */}
-      {link.customAlias && (
-        <div className="mb-3">
-          <p className="text-sm text-gray-600">Custom Alias</p>
-          <p className="text-sm font-semibold text-green-600">{link.customAlias}</p>
-        </div>
-      )}
-      
-      {/* Shortened URL */}
-      <div className="mb-3">
-        <p className="text-sm text-gray-600 mb-1">Shortened URL</p>
-        <a
-          href={shortUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-purple-600 hover:text-purple-800 hover:underline break-all font-mono font-semibold bg-purple-50 p-3 rounded border border-purple-200 inline-block"
-          title={`Click to test: ${shortUrl}`}
-        >
-          {shortUrl}
-        </a>
-      </div>
-      
-      {/* Original URL */}
-      <div className="mb-3">
-        <p className="text-sm text-gray-600 mb-1">Original URL</p>
-        <a
-          href={link.originalUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-blue-500 hover:underline break-words"
-          title={link.originalUrl}
-        >
-          {link.originalUrl}
-        </a>
-      </div>
-      
-      {/* Metadata: Created date and clicks */}
-      <div className="grid grid-cols-2 gap-4 mb-5 pb-4 border-b border-gray-100 text-sm">
-        <div>
-          <p className="text-gray-600 text-xs font-semibold uppercase mb-1">Created</p>
-          <p className="font-semibold text-gray-900">{formatDate(link.createdAt)}</p>
-        </div>
-        <div>
-          <p className="text-gray-600 text-xs font-semibold uppercase mb-1">Clicks</p>
-          <p className="font-semibold text-gray-900">{formatNumber(clicks)}</p>
+
+        {/* Right side: QR Code */}
+        <div className="flex-shrink-0">
+          <div className="bg-gray-50 p-3 rounded border border-gray-200">
+            <QRCode
+              value={shortUrl}
+              size={120}
+              level="H"
+              includeMargin={true}
+              fgColor="#000000"
+              bgColor="#ffffff"
+            />
+          </div>
         </div>
       </div>
       
       {/* Action buttons */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-6 pt-6 border-t border-gray-100">
         {/* Copy button */}
         <button
           onClick={handleCopy}

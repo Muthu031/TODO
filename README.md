@@ -98,6 +98,52 @@ A complete, scalable URL Shortener application built with modern technologies an
 - URL validation and encoding
 - Logging with Winston
 
+## 🎨 UI/Frontend Components
+
+### Dashboard Link Card Layout
+
+The dashboard displays each shortened link in a card component with an optimized two-column layout:
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  Short Code: zun0DZ              │  [QR Code]              │
+│  Alias: its-working              │  (120x120)              │
+│  Shortened URL: http://...       │                         │
+│  Original: https://...           │                         │
+│  Created: Apr 26, 2026           │                         │
+├────────────────────────────────────────────────────────────┤
+│  📋 Copy Link  │  📊 Analytics  │  🗑️ Delete              │
+└────────────────────────────────────────────────────────────┘
+```
+
+**Features:**
+- **QR Code on Right**: Positioned at the top right for quick scanning and testing
+- **Link Info on Left**: Short code, alias, shortened URL, original URL, creation date
+- **Clickable Shortened URL**: Opens in new tab to test the redirect functionality
+- **QR Code Download**: Users can download QR code from the home page modal after creating a link
+- **Action Buttons**: Copy, Analytics, and Delete buttons at the bottom
+- **Responsive Design**: Adapts to mobile and tablet screens
+
+### Pages
+
+1. **Home Page** - Create shortened links
+   - URL input field with validation
+   - Optional custom alias
+   - Optional expiration date
+   - QR code modal with download option upon creation
+
+2. **Dashboard** - View and manage all links
+   - List of all shortened links in card format
+   - Each card shows QR code, link info, and action buttons
+   - Click the shortened URL to test the redirect
+   - View detailed analytics for each link
+   - Delete links
+
+3. **Analytics Page** - Detailed link analytics
+   - Click timeline chart (30-day history)
+   - Total clicks counter
+   - Link information display
+
 ## 🚀 Quick Start
 
 ### Prerequisites
