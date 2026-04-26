@@ -12,11 +12,12 @@ export default defineConfig({
     // Proxy API requests to backend
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
-      '/:': {
-        target: 'http://localhost:3000',
+      // Catch shortened links and redirect endpoints
+      '^/(?!api|node_modules|\\.)[^.]*$': {
+        target: 'http://localhost:3001',
         changeOrigin: true,
       },
     },

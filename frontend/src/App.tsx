@@ -40,23 +40,23 @@ function App() {
             </div>
 
             {/* Navigation Links */}
-            <div className="flex gap-6">
+            <div className="flex gap-8 items-center">
               <button
                 onClick={() => setCurrentPage('home')}
-                className={`font-semibold transition-colors ${
+                className={`font-semibold px-3 py-2 transition-colors rounded ${
                   currentPage === 'home'
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'text-blue-600 bg-blue-50 border-b-2 border-blue-600'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 Create Link
               </button>
               <button
                 onClick={() => setCurrentPage('dashboard')}
-                className={`font-semibold transition-colors ${
+                className={`font-semibold px-3 py-2 transition-colors rounded ${
                   currentPage === 'dashboard'
-                    ? 'text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'text-blue-600 bg-blue-50 border-b-2 border-blue-600'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
               >
                 Dashboard
