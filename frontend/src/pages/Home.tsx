@@ -1,7 +1,7 @@
 /**
  * Home Page - Link Creation
  * Main page where users shorten URLs
- * Features: URL input, custom alias, expiration picker
+ * Features: URL input, custom alias, expiration picker, QR code generation
  */
 
 import React, { useState } from 'react';
@@ -13,6 +13,7 @@ import {
   ErrorMessage,
   SuccessMessage,
 } from '../components/Common';
+import { QRCodeModal } from '../components/QRCodeModal';
 import { validateUrl, validateAlias, generateShortUrl } from '../utils';
 import { Link } from '../types';
 
@@ -192,35 +193,13 @@ export const HomePage: React.FC = () => {
           </form>
         </Card>
 
-        {/* Display created link */}
+        {/* Display created link with QR code modal */}
         {createdLink && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Shortened Link</h2>
-            <Card>
-              <div className="text-center space-y-4">
-                {/* Short URL display */}
-                <div>
-                  <p className="text-gray-600 mb-2">Your short URL:</p>
-                  <p className="text-2xl font-mono font-bold text-blue-600 break-all">
-                    {generateShortUrl(createdLink.shortCode, createdLink.customAlias || undefined)}
-                  </p>
-                </div>
-
-                {/* Copy button */}
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      generateShortUrl(createdLink.shortCode, createdLink.customAlias || undefined)
-                    );
-                    alert('Copied to clipboard!');
-                  }}
-                  className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-                >
-                  📋 Copy to Clipboard
-                </button>
-              </div>
-            </Card>
-          </div>
+          <QRCodeModal
+            shortUrl={generateShortUrl(createdLink.shortCode, createdLink.customAlias || undefined)}
+            originalUrl={createdLink.originalUrl}
+            onClose={() => setCreatedLink(null)}
+          />
         )}
       </div>
     </div>
