@@ -111,7 +111,7 @@ export const DashboardPage: React.FC = () => {
         {/* Links grid */}
         {linksData?.data && linksData.data.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {linksData.data.map((link) => (
                 <LinkCard
                   key={link.id}
