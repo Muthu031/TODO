@@ -14,7 +14,7 @@ dotenv.config();
  */
 export const APP_CONFIG = {
   // Server configuration
-  port: parseInt(process.env.PORT || '3000', 10),
+  port: parseInt(process.env.PORT || '3001', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
   
   // Database configuration (Prisma uses DATABASE_URL directly)
