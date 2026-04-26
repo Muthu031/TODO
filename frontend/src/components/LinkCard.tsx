@@ -1,12 +1,24 @@
 /**
  * Link Card Component
- * Displays individual link information in list/dashboard
+ * 
+ * Displays individual link information in a themed card with:
+ * - Link metadata (short code, alias, URLs, creation date)
+ * - QR code for quick access
+ * - Action buttons (Copy, Analytics, Delete)
+ * - Theme-aware styling that adapts to current theme
+ * 
+ * Features:
+ * - Responsive two-column layout (info left, QR code right)
+ * - Clickable shortened URL for testing redirects
+ * - Copy-to-clipboard functionality
+ * - Responsive design for mobile/tablet/desktop
  */
 
 import React, { useState } from 'react';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { Link } from '../types';
 import { formatDate, generateShortUrl, copyToClipboard } from '../utils';
+import { useTheme } from '../context/ThemeContext';
 
 interface LinkCardProps {
   /** Link data to display */
@@ -21,7 +33,8 @@ interface LinkCardProps {
 
 /**
  * Card component for displaying shortened link
- * Shows short code, original URL, creation date, click count
+ * Shows short code, original URL, creation date, and QR code
+ * Adapts styling based on current theme from context
  */
 export const LinkCard: React.FC<LinkCardProps> = ({
   link,
@@ -29,127 +42,153 @@ export const LinkCard: React.FC<LinkCardProps> = ({
   onAnalytics,
   isDeleting = false,
 }) => {
+  // Get theme colors from context
+  const { colors } = useTheme();
+
+  // State for copy button feedback
   const [copied, setCopied] = useState(false);
-  
-  // Generate shortened URL
+
+  // Generate shortened URL from short code or custom alias
   const shortUrl = generateShortUrl(link.shortCode, link.customAlias || undefined);
-  
+
+  /**
+   * Handle copy to clipboard
+   * Provides visual feedback when link is copied
+   */
   const handleCopy = async (): Promise<void> => {
     try {
       await copyToClipboard(shortUrl);
       setCopied(true);
+      // Reset after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error('Failed to copy:', error);
     }
   };
-  
-  // Check if link is expired
+
+  // Check if link is expired based on expiration date
   const isExpired = link.expiresAt && new Date(link.expiresAt) < new Date();
-  
+
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+    <div className={`${colors.card} ${colors.cardBorder} border rounded-lg p-6 ${colors.shadowHover} transition-all duration-300`}>
       {/* Container with content on left and QR on right */}
       <div className="flex gap-6">
         {/* Left side: Link information */}
         <div className="flex-1">
           {/* Header: Short code and status */}
-          <div className="flex justify-between items-start mb-4 pb-4 border-b border-gray-100">
+          <div className={`flex justify-between items-start mb-4 pb-4 border-b ${colors.borderLight}`}>
             <div>
-              <p className="text-sm text-gray-600">Short Code</p>
-              <p className="text-lg font-bold text-blue-600 font-mono">{link.shortCode}</p>
+              <p className={`text-sm ${colors.textSecondary} font-semibold uppercase mb-1`}>Short Code</p>
+              <p className={`text-lg font-bold ${colors.primary} font-mono`}>{link.shortCode}</p>
             </div>
             {isExpired && (
-              <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-semibold">
+              <span className={`${colors.errorBg} ${colors.error} px-2 py-1 rounded text-xs font-semibold`}>
                 Expired
               </span>
             )}
           </div>
-          
+
           {/* Custom alias if exists */}
           {link.customAlias && (
             <div className="mb-3">
-              <p className="text-sm text-gray-600">Custom Alias</p>
-              <p className="text-sm font-semibold text-green-600">{link.customAlias}</p>
+              <p className={`text-sm ${colors.textSecondary} font-semibold uppercase mb-1`}>Alias</p>
+              <p className={`text-sm font-bold ${colors.success}`}>{link.customAlias}</p>
             </div>
           )}
-          
+
           {/* Shortened URL */}
           <div className="mb-3">
-            <p className="text-sm text-gray-600 mb-1">Shortened URL</p>
+            <p className={`text-sm ${colors.textSecondary} mb-1 font-semibold uppercase`}>Shortened URL</p>
             <a
               href={shortUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-purple-600 hover:text-purple-800 hover:underline break-all font-mono font-semibold bg-purple-50 p-3 rounded border border-purple-200 inline-block"
+              className={`
+                text-sm ${colors.primary} hover:underline break-all font-mono font-semibold
+                ${colors.backgroundSecondary} p-3 rounded border ${colors.borderLight}
+                inline-block transition-colors duration-200 ${colors.cardHover}
+              `}
               title={`Click to test: ${shortUrl}`}
             >
               {shortUrl}
             </a>
           </div>
-          
+
           {/* Original URL */}
           <div className="mb-3">
-            <p className="text-sm text-gray-600 mb-1">Original URL</p>
+            <p className={`text-sm ${colors.textSecondary} mb-1 font-semibold uppercase`}>Original URL</p>
             <a
               href={link.originalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-500 hover:underline break-words"
+              className={`text-sm ${colors.primary} hover:underline break-words`}
               title={link.originalUrl}
             >
               {link.originalUrl}
             </a>
           </div>
-          
+
           {/* Created Date */}
           <div className="text-sm">
-            <p className="text-gray-600 text-xs font-semibold uppercase mb-1">Created</p>
-            <p className="font-semibold text-gray-900">{formatDate(link.createdAt)}</p>
+            <p className={`${colors.textSecondary} text-xs font-semibold uppercase mb-1`}>Created</p>
+            <p className={`font-semibold ${colors.text}`}>{formatDate(link.createdAt)}</p>
           </div>
         </div>
 
         {/* Right side: QR Code */}
         <div className="flex-shrink-0">
-          <div className="bg-gray-50 p-3 rounded border border-gray-200">
+          <div className={`${colors.backgroundSecondary} p-3 rounded border ${colors.borderLight}`}>
             <QRCode
               value={shortUrl}
               size={120}
               level="H"
               includeMargin={true}
-              fgColor="#000000"
+              fgColor={link.expiresAt && isExpired ? '#999999' : '#000000'}
               bgColor="#ffffff"
             />
           </div>
         </div>
       </div>
-      
+
       {/* Action buttons */}
-      <div className="flex gap-3 mt-6 pt-6 border-t border-gray-100">
+      <div className={`flex gap-3 mt-6 pt-6 border-t ${colors.borderLight}`}>
         {/* Copy button */}
         <button
           onClick={handleCopy}
-          className="flex-1 px-4 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm font-semibold transition-colors duration-200"
+          className={`
+            flex-1 px-4 py-2 ${colors.buttonSecondary} text-sm font-semibold
+            transition-all duration-200 rounded
+            hover:scale-105 active:scale-95
+          `}
         >
           {copied ? '✓ Copied' : '📋 Copy'}
         </button>
-        
+
         {/* Analytics button */}
         {onAnalytics && (
           <button
             onClick={() => onAnalytics(link.id)}
-            className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm font-semibold transition-colors duration-200"
+            className={`
+              flex-1 px-4 py-2 ${colors.buttonSecondary} text-sm font-semibold
+              transition-all duration-200 rounded
+              hover:scale-105 active:scale-95
+            `}
           >
             📊 Analytics
           </button>
         )}
-        
+
         {/* Delete button */}
         {onDelete && (
           <button
             onClick={() => onDelete(link.id)}
             disabled={isDeleting}
-            className="flex-1 px-4 py-2 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm font-semibold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`
+              flex-1 px-4 py-2 ${colors.error} ${colors.errorBg} text-sm font-semibold
+              transition-all duration-200 rounded
+              hover:scale-105 active:scale-95
+              disabled:opacity-50 disabled:cursor-not-allowed
+            `}
           >
             {isDeleting ? '...' : '🗑️ Delete'}
           </button>
