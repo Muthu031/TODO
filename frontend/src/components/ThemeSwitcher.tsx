@@ -65,7 +65,7 @@ export const ThemeSwitcher: React.FC = () => {
           px-3 py-1.5 rounded
           text-sm font-semibold
           transition-all duration-300
-          border border-current
+          border-2
           cursor-pointer
           active:scale-95
           focus:outline-none focus:ring-2 focus:ring-offset-1
@@ -73,14 +73,15 @@ export const ThemeSwitcher: React.FC = () => {
           bg-no-repeat
         `}
         style={{
-          color: colors.navText.replace('text-', '').startsWith('white') || colors.navText.includes('text-white') ? '#fff' : '#000',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-          borderColor: 'currentColor',
+          color: '#111827',
+          backgroundColor: '#ffffff',
+          borderColor: '#d1d5db',
           backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
           backgroundPosition: 'right 0.5rem center',
           backgroundSize: '1.5em 1.5em',
           backgroundRepeat: 'no-repeat',
           paddingRight: '2.5rem',
+          minWidth: '150px',
         }}
       >
         {/* Option items with proper styling */}
