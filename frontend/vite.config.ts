@@ -15,8 +15,9 @@ export default defineConfig({
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
-      // Catch shortened links and redirect endpoints
-      '^/(?!api|node_modules|\\.)[^.]*$': {
+      // Proxy shortened links (alphanumeric with dashes/underscores)
+      // Matches: /my-link, /abc123, but NOT /, /., etc.
+      '^/[a-zA-Z0-9\\-_]+$': {
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
