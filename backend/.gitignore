@@ -8,12 +8,12 @@ yarn-error.log*
 dist/
 build/
 *.tsbuildinfo
+.tsc-output
 
-# Environment variables (never commit secrets!)
+# Environment
 .env
 .env.local
 .env.*.local
-.env.production
 
 # IDE
 .vscode/
@@ -23,12 +23,6 @@ build/
 *~
 .DS_Store
 
-# OS
-Thumbs.db
-
 # Logs
 logs/
 *.log
-
-# Database
-*.sqlite3

@@ -1,0 +1,91 @@
+version: '3.8'
+
+# Docker Compose configuration for URL Shortener development environment
+# Starts PostgreSQL, Redis, and local development servers
+# Usage: docker-compose up
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: url-shortener-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: url_shortener
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persist database data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - url-shortener
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: url-shortener-cache
+    command: redis-server --requirepass password
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - url-shortener
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: url-shortener-api
+    environment:
+      DATABASE_URL: "postgresql://user:password@postgres:5432/url_shortener"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: password
+      PORT: 3000
+      NODE_ENV: development
+      CORS_ORIGIN: "http://localhost:5173"
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - url-shortener
+    command: npm start
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: url-shortener-web
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - url-shortener
+    environment:
+      VITE_API_URL: "http://localhost:3000"
+
+# Persistent volumes
+volumes:
+  postgres_data:
+
+# Networks
+networks:
+  url-shortener:
+    driver: bridge

@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// LINKS TABLE - Stores all shortened URLs
+// Core entity that maps short_code/custom_alias to original URLs
+model Link {
+  id            String   @id @default(cuid())
+  shortCode     String   @unique @db.VarChar(8)          // Base62 encoded unique identifier (e.g., "abc123")
+  originalUrl   String   @db.Text                        // The original long URL to redirect to
+  customAlias   String?  @unique @db.VarChar(255)        // Optional user-defined alias (e.g., "my-link")
+  expiresAt     DateTime?                                // Optional expiration timestamp for TTL functionality
+  createdAt     DateTime @default(now())                 // Link creation timestamp
+  updatedAt     DateTime @updatedAt                      // Last update timestamp
+
+  // Relationships
+  clicks        Click[]                                   // One-to-many: Link can have multiple clicks
+
+  // Indexes for optimal query performance
+  @@index([shortCode])                                   // Fast lookup by short code
+  @@index([customAlias])                                 // Fast lookup by custom alias
+  @@index([expiresAt])                                   // For TTL cleanup queries
+}
+
+// CLICKS TABLE - Analytics tracking for each redirect
+// Records every click/visit to a shortened URL with metadata
+model Click {
+  id            String   @id @default(cuid())
+  linkId        String                                   // Foreign key to Links table
+  visitedAt     DateTime @default(now())                 // When the click occurred
+  ipAddress     String   @db.VarChar(45)                // IPv4/IPv6 address (max 45 chars for IPv6)
+  userAgent     String   @db.Text                       // Browser/client user agent string
+  country       String?  @db.VarChar(2)                 // ISO country code (optional, from IP geo lookup)
+
+  // Relationships
+  link          Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  // Indexes for analytics queries
+  @@index([linkId])                                      // Query clicks by link
+  @@index([visitedAt])                                   // Query clicks by date range
+  @@index([country])                                     // Analytics by country
+}

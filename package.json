@@ -1,23 +1,28 @@
 {
-  "name": "todo-app",
+  "name": "url-shortener",
   "version": "1.0.0",
+  "description": "Production-grade URL Shortener - Full Stack Application",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "npm run dev --prefix backend & npm run dev --prefix frontend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-toastify": "^11.0.5"
-  },
+  "keywords": [
+    "url-shortener",
+    "nodejs",
+    "react",
+    "typescript",
+    "postgresql",
+    "redis"
+  ],
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.0",
-    "typescript": "^5.6.0",
-    "vite": "^5.4.0"
+    "@types/node": "^25.6.0"
   }
 }
