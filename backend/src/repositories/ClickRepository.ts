@@ -176,12 +176,12 @@ export class ClickRepository {
       
       const results: any[] = await (this.prisma as any).$queryRaw`
         SELECT
-          DATE(visited_at) as date,
+          DATE("visitedAt") as date,
           COUNT(*) as count
-        FROM clicks
-        WHERE link_id = ${linkId}
-          AND visited_at >= ${startDate}
-        GROUP BY DATE(visited_at)
+        FROM "Click"
+        WHERE "linkId" = ${linkId}
+          AND "visitedAt" >= ${startDate}
+        GROUP BY DATE("visitedAt")
         ORDER BY date ASC
       `;
       
