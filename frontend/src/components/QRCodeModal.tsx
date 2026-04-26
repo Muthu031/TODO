@@ -4,7 +4,7 @@
  */
 
 import React, { useRef } from 'react';
-import { QRCodeSVG as QRCode } from 'qrcode.react';
+import { QRCodeCanvas as QRCode } from 'qrcode.react';
 import { copyToClipboard } from '../utils';
 
 interface QRCodeModalProps {
