@@ -2,15 +2,16 @@
  * Dashboard Page - Link Management
  * Shows all created links with pagination
  * Features: List links, delete links, view analytics
+ * Theme: Fully themed with current theme context
  */
 
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import { useLinks, useDeleteLink, useAnalytics } from '../hooks';
 import { LinkCard } from '../components/LinkCard';
 import {
   LoadingSpinner,
   ErrorMessage,
-  Card,
   Button,
 } from '../components/Common';
 import { AnalyticsChart } from '../components/AnalyticsChart';
@@ -18,8 +19,12 @@ import { AnalyticsChart } from '../components/AnalyticsChart';
 /**
  * Dashboard page component
  * Shows list of all shortened links with management options
+ * Uses theme colors from context for all styling
  */
 export const DashboardPage: React.FC = () => {
+  // Get theme colors from context
+  const { colors } = useTheme();
+
   // Pagination state
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
@@ -56,31 +61,32 @@ export const DashboardPage: React.FC = () => {
   // Show analytics view if selected
   if (selectedLinkId && analyticsData) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
+      <div className={`min-h-screen ${colors.gradientBg} py-12 px-4`}>
         <div className="max-w-6xl mx-auto">
           {/* Back button */}
           <button
             onClick={() => setSelectedLinkId(null)}
-            className="mb-6 text-blue-600 hover:text-blue-800 font-semibold"
+            className={`mb-6 ${colors.primary} hover:underline font-semibold transition-colors`}
           >
             ← Back to Dashboard
           </button>
 
           {/* Analytics header */}
-          <Card title="Link Analytics">
+          <div className={`${colors.card} ${colors.cardBorder} border rounded-lg p-8 ${colors.shadow} mb-6`}>
+            <h2 className={`text-2xl font-bold ${colors.text} mb-4`}>Link Analytics</h2>
             <div className="mb-4">
-              <p className="text-gray-600 mb-1">Short Code: <span className="font-mono font-bold">{analyticsData.shortCode}</span></p>
-              <p className="text-gray-600">Original URL: <a href={analyticsData.originalUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{analyticsData.originalUrl}</a></p>
+              <p className={`${colors.textSecondary} mb-1`}>Short Code: <span className="font-mono font-bold">{analyticsData.shortCode}</span></p>
+              <p className={`${colors.textSecondary}`}>Original URL: <a href={analyticsData.originalUrl} target="_blank" rel="noopener noreferrer" className={`${colors.primary} hover:underline`}>{analyticsData.originalUrl}</a></p>
             </div>
-          </Card>
+          </div>
 
           {/* Analytics charts */}
           {isLoadingAnalytics ? (
             <LoadingSpinner text="Loading analytics..." />
           ) : (
-            <Card>
+            <div className={`${colors.card} ${colors.cardBorder} border rounded-lg p-8 ${colors.shadow}`}>
               <AnalyticsChart analytics={analyticsData} />
-            </Card>
+            </div>
           )}
         </div>
       </div>
@@ -93,12 +99,12 @@ export const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className={`min-h-screen ${colors.gradientBg} py-12 px-4`}>
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Your Links</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className={`text-4xl font-bold ${colors.text} mb-2`}>Your Links</h1>
+          <p className={`text-lg ${colors.textSecondary}`}>
             Manage your shortened links, view analytics, and track performance
           </p>
         </div>
@@ -132,7 +138,7 @@ export const DashboardPage: React.FC = () => {
                 >
                   ← Previous
                 </Button>
-                <span className="text-gray-600 font-semibold flex items-center">
+                <span className={`${colors.textSecondary} font-semibold flex items-center`}>
                   Page {linksData.pagination.page}
                 </span>
                 {linksData.data.length === ITEMS_PER_PAGE && (
@@ -147,17 +153,11 @@ export const DashboardPage: React.FC = () => {
             )}
           </>
         ) : (
-          <Card>
-            <div className="text-center py-12">
-              <p className="text-gray-600 text-lg mb-4">No links created yet</p>
-              <a
-                href="/"
-                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Create Your First Link
-              </a>
-            </div>
-          </Card>
+          <div className={`${colors.card} ${colors.cardBorder} border rounded-lg p-8 ${colors.shadow} text-center`}>
+            <p className={`${colors.textSecondary} text-lg`}>
+              No shortened links yet. Start by creating one!
+            </p>
+          </div>
         )}
       </div>
     </div>

@@ -51,7 +51,7 @@ function AppContent() {
           <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center gap-4">
             {/* Logo/Title Section */}
             <div className="flex items-center gap-2">
-              <span className="text-3xl animate-bounce">🔗</span>
+              <span className="text-3xl font-bold">⊕</span>
               <h1 className={`text-2xl font-bold ${colors.text}`}>
                 URL Shortener
               </h1>
@@ -71,7 +71,7 @@ function AppContent() {
                   }
                 `}
               >
-                ✏️ Create Link
+                ✎ Create Link
               </button>
 
               {/* Dashboard Button */}
@@ -86,7 +86,7 @@ function AppContent() {
                   }
                 `}
               >
-                📊 Dashboard
+                ▤ Dashboard
               </button>
 
               {/* Theme Switcher */}

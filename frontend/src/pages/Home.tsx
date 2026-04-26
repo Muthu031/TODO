@@ -2,14 +2,15 @@
  * Home Page - Link Creation
  * Main page where users shorten URLs
  * Features: URL input, custom alias, expiration picker, QR code generation
+ * Theme: Fully themed with current theme context
  */
 
 import React, { useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import { useCreateLink } from '../hooks';
 import {
   InputField,
   Button,
-  Card,
   ErrorMessage,
   SuccessMessage,
 } from '../components/Common';
@@ -20,8 +21,12 @@ import { Link } from '../types';
 /**
  * Home page component
  * Displays form to create shortened links
+ * Uses theme colors from context
  */
 export const HomePage: React.FC = () => {
+  // Get theme colors from context
+  const { colors } = useTheme();
+
   // Form state
   const [originalUrl, setOriginalUrl] = useState('');
   const [customAlias, setCustomAlias] = useState('');
@@ -113,18 +118,19 @@ export const HomePage: React.FC = () => {
   const minDateStr = minDate.toISOString().split('T')[0];
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div className={`min-h-screen ${colors.gradientBg} py-12 px-4`}>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">URL Shortener</h1>
-          <p className="text-lg text-gray-600">
-            Create short, shareable links with optional custom aliases and expiration
+          <h1 className={`text-4xl font-bold ${colors.text} mb-2`}>Create Shortened Link</h1>
+          <p className={`text-lg ${colors.textSecondary}`}>
+            Generate short, shareable links with optional custom aliases and expiration dates
           </p>
         </div>
         
         {/* Main form card */}
-        <Card title="Create Shortened Link">
+        <div className={`${colors.card} ${colors.cardBorder} border rounded-lg p-8 ${colors.shadow}`}>
+          <h2 className={`text-2xl font-bold ${colors.text} mb-6`}>URL Input Form</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Error message */}
             {(errors.submit || error) ? (
@@ -191,7 +197,7 @@ export const HomePage: React.FC = () => {
               Create Short Link
             </Button>
           </form>
-        </Card>
+        </div>
 
         {/* Display created link with QR code modal */}
         {createdLink && (

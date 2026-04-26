@@ -1,10 +1,12 @@
 /**
  * QR Code Modal Component
  * Displays QR code for shortened link with copy and download options
+ * Theme: Fully themed with current theme context
  */
 
 import React, { useRef } from 'react';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
+import { useTheme } from '../context/ThemeContext';
 import { copyToClipboard } from '../utils';
 
 interface QRCodeModalProps {
@@ -19,12 +21,16 @@ interface QRCodeModalProps {
 /**
  * Modal showing QR code for shortened link
  * Features: Display QR code, copy link, download QR code
+ * Theme: Fully themed with current theme context
  */
 export const QRCodeModal: React.FC<QRCodeModalProps> = ({
   shortUrl,
   originalUrl,
   onClose,
 }) => {
+  // Get theme colors from context
+  const { colors } = useTheme();
+
   const qrRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = React.useState(false);
 
@@ -58,41 +64,41 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay - Adaptive to theme */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+        className={`fixed inset-0 ${colors.backgroundTertiary} bg-opacity-70 flex items-center justify-center p-4 z-50`}
         onClick={onClose}
       >
-        {/* Modal */}
+        {/* Modal - Themed card */}
         <div
-          className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8"
+          className={`${colors.card} rounded-xl ${colors.shadow} max-w-md w-full p-8 ${colors.cardBorder} border`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl"
+            className={`absolute top-4 right-4 ${colors.textTertiary} hover:${colors.textSecondary} text-2xl transition-colors`}
           >
             ✕
           </button>
 
           {/* Success message */}
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+            <div className={`w-6 h-6 ${colors.success} rounded-full flex items-center justify-center`}>
               <span className="text-white text-sm font-bold">✓</span>
             </div>
-            <h2 className="text-xl font-bold text-gray-900">Link shortened successfully!</h2>
+            <h2 className={`text-xl font-bold ${colors.text}`}>Link shortened successfully!</h2>
           </div>
 
           {/* Shortened URL display */}
           <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-2">Your shortened link:</p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 break-all">
+            <p className={`text-sm ${colors.textSecondary} mb-2`}>Your shortened link:</p>
+            <div className={`${colors.backgroundSecondary} ${colors.cardBorder} border rounded-lg p-4 break-all`}>
               <a
                 href={shortUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline font-mono font-semibold text-sm"
+                className={`${colors.primary} hover:underline font-mono font-semibold text-sm`}
               >
                 {shortUrl}
               </a>
@@ -102,7 +108,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
           {/* Copy link button */}
           <button
             onClick={handleCopy}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 mb-6 flex items-center justify-center gap-2"
+            className={`w-full ${colors.buttonPrimary} ${colors.buttonPrimaryText} px-6 py-3 rounded-lg font-semibold transition-all duration-200 mb-6 flex items-center justify-center gap-2 hover:scale-105 active:scale-95`}
           >
             {copied ? (
               <>
@@ -118,8 +124,8 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
           </button>
 
           {/* QR Code section */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6 text-center">
-            <p className="text-sm text-gray-600 mb-4 font-semibold">QR Code:</p>
+          <div className={`${colors.backgroundSecondary} ${colors.cardBorder} border rounded-lg p-6 mb-6 text-center`}>
+            <p className={`text-sm ${colors.textSecondary} mb-4 font-semibold`}>QR Code:</p>
             <div
               ref={qrRef}
               className="flex justify-center mb-4"
@@ -138,7 +144,7 @@ export const QRCodeModal: React.FC<QRCodeModalProps> = ({
           {/* Download QR Code button */}
           <button
             onClick={handleDownloadQR}
-            className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
+            className={`w-full ${colors.buttonSecondary} px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95`}
           >
             <span>⬇️</span>
             <span>Download QR Code</span>
